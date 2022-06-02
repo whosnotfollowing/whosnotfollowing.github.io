@@ -10,5 +10,101 @@
   <header>
     <h1>Who is not following you back on GitHub?</h1>
   </header>
+
+  <!-- username input -->
+  <form id="username_form">
+    <input type="text" name="username" id="username" value="" placeholder="Your GitHub username">
+    <input type="submit" value="Submit" />
+  </form>
+
+  <div id="whos_not_following"></div>
+
+  <hr>
+
+  <p><a href="https://github.com/artkirienko">Artem Kirienko</a> © 2012-<span id="year">2022</span></p>
+
+  <script type="module">
+    console.log('Setting current copyright year')
+    document.getElementById("year").innerHTML = new Date().getFullYear();
+
+    console.log('Loading octokit directly from cdn.skypack.dev...');
+    import { Octokit, App } from "https://cdn.skypack.dev/octokit";
+    console.log('Success!');
+
+    const octokit = new Octokit();
+
+    let username_form = document.getElementById("username_form");
+
+    username_form.addEventListener("submit", async function(event){
+      event.preventDefault();
+
+      // Clear whos_not_following_list
+      // get elements
+      let child = document.getElementById("whos_not_following_container");
+      let parent = document.getElementById("whos_not_following");
+
+      // Delete child
+      if (!!child) {
+        parent.removeChild(child)
+      }
+
+      // Get username
+      let login = username_form.querySelector('input[name=username]').value;
+
+      if (!!login) {
+        console.log('Click');
+
+        // Clear input
+        document.getElementById('username').value = '';
+
+        // Get followers
+        console.log(`Geting followers for ${login}`);
+        let followers = (await octokit.paginate(octokit.rest.users.listFollowersForUser, {username: login, per_page: 100})).map(a => a.login);
+        console.log(followers);
+
+        // Get following
+        console.log(`Geting following for ${login}`);
+        let following = (await octokit.paginate(octokit.rest.users.listFollowingForUser, {username: login, per_page: 100})).map(a => a.login);
+        console.log(following);
+
+        // Calculate who is not following back
+        console.log(`Who is not following ${login} back on GitHub?`);
+        let whos_not_following = following.filter(x => !followers.includes(x));
+        console.log(whos_not_following);
+
+        // Create easy to remove container
+        let element = document.getElementById("whos_not_following");
+        let container = document.createElement("div");
+        container.setAttribute("id", "whos_not_following_container");
+        element.appendChild(container);
+
+        // Create title
+        let h2 = document.createElement("h2");
+        let not_following_text = document.createTextNode(`Who is not following ${login} back on GitHub?`);
+        h2.appendChild(not_following_text);
+        container.appendChild(h2);
+
+        if (whos_not_following.length === 0) {
+          container.appendChild(document.createElement("h2").appendChild(document.createTextNode(`Success! Everyone is following ${login} back on GitHub`)));
+        } else {
+          // Create list
+          let list = document.createElement("ul");
+          container.appendChild(list);
+
+          whos_not_following.forEach((element) => {
+            let list_item = document.createElement("li");
+            let link_text = `https://github.com/${element}`;
+            let link = document.createElement("a");
+            link.setAttribute("href", link_text);
+            link.appendChild(document.createTextNode(element));
+            list_item.appendChild(link);
+            list.appendChild(list_item);
+          });
+        };
+      } else {
+        console.log('Click; no input');
+      };
+    });
+  </script>
 </body>
 </html>
