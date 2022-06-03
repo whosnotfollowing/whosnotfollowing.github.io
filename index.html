@@ -14,7 +14,7 @@
   <!-- username input -->
   <form id="username_form">
     <input type="text" name="username" id="username" value="" placeholder="Your GitHub username">
-    <input type="submit" value="Submit" />
+    <input type="submit" value="Submit" id="username_submit" />
   </form>
 
   <div id="whos_not_following"></div>
@@ -63,8 +63,8 @@
       if (!!login) {
         console.log('Click');
 
-        // Clear input
-        document.getElementById('username').value = '';
+        // Disable username submit button
+        document.getElementById('username_submit').disabled = true;
 
         // Get followers
         console.log(`Geting followers for ${login}`);
@@ -110,6 +110,12 @@
             list.appendChild(list_item);
           });
         };
+
+        // Clear input
+        document.getElementById('username').value = '';
+
+        // Enable username submit button
+        document.getElementById('username_submit').disabled = false;
       } else {
         console.log('Click; no input');
       };
