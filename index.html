@@ -11,13 +11,16 @@
     <h1>Who is not following you back on GitHub?</h1>
   </header>
 
-  <!-- username input -->
-  <form id="username_form">
-    <input type="text" name="username" id="username" value="" placeholder="Your GitHub username">
-    <input type="submit" value="Submit" id="username_submit" />
-  </form>
+  <main>
+    <!-- username input -->
+    <form id="username_form">
+      <input type="text" name="username" id="username" value="" placeholder="Your GitHub username">
+      <input type="submit" value="Submit" id="username_submit" />
+    </form>
 
-  <div id="whos_not_following"></div>
+    <!-- who's not following div -->
+    <div id="whos_not_following"></div>
+  </main>
 
   <hr>
 
@@ -47,10 +50,10 @@
     username_form.addEventListener("submit", async function(event){
       event.preventDefault();
 
-      // Clear whos_not_following_list
+      // Remove whos_not_following div
       // get elements
-      let child = document.getElementById("whos_not_following_container");
-      let parent = document.getElementById("whos_not_following");
+      let child = document.getElementById("whos_not_following");
+      let parent = document.body.querySelector('main');
 
       // Delete child
       if (!!child) {
@@ -81,11 +84,10 @@
         let whos_not_following = following.filter(x => !followers.includes(x));
         console.log(whos_not_following);
 
-        // Create easy to remove container
-        let element = document.getElementById("whos_not_following");
+        // Re-create whos_not_following div
         let container = document.createElement("div");
-        container.setAttribute("id", "whos_not_following_container");
-        element.appendChild(container);
+        container.setAttribute("id", "whos_not_following");
+        parent.appendChild(container);
 
         // Create title
         let h2 = document.createElement("h2");
