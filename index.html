@@ -52,7 +52,7 @@
     document.getElementById("year").innerHTML = new Date().getFullYear();
 
     console.log('Loading octokit directly from cdn.skypack.dev...');
-    import { Octokit, App } from "https://cdn.skypack.dev/octokit";
+    import { Octokit, App } from "https://esm.sh/octokit";
     console.log('Success!');
 
     const octokit = new Octokit();
